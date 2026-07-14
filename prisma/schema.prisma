@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PATIENT
+  DOCTOR
+}
+
+enum ConsultationStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+}
+
+model User {
+  id                   Int            @id @default(autoincrement())
+  name                 String
+  email                String         @unique
+  passwordHash         String
+  role                 Role
+  createdAt            DateTime       @default(now())
+  doctorProfile        DoctorProfile?
+  patientConsultations Consultation[] @relation("PatientConsultations")
+  doctorConsultations  Consultation[] @relation("DoctorConsultations")
+  messages             Message[]
+}
+
+model DoctorProfile {
+  id                Int    @id @default(autoincrement())
+  userId            Int    @unique
+  specialization    String
+  yearsOfExperience Int
+  user              User   @relation(fields: [userId], references: [id])
+}
+
+model Consultation {
+  id        Int                @id @default(autoincrement())
+  patientId Int
+  doctorId  Int
+  status    ConsultationStatus @default(PENDING)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  patient   User               @relation("PatientConsultations", fields: [patientId], references: [id])
+  doctor    User               @relation("DoctorConsultations", fields: [doctorId], references: [id])
+  messages  Message[]
+
+  @@index([patientId])
+  @@index([doctorId])
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  consultationId Int
+  senderId       Int
+  content        String
+  createdAt      DateTime     @default(now())
+  consultation   Consultation @relation(fields: [consultationId], references: [id])
+  sender         User         @relation(fields: [senderId], references: [id])
+
+  @@index([consultationId, createdAt])
+}

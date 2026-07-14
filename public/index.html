@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sanatan Clinic</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" class="brand-icon" aria-hidden="true">
+          <path d="M12 2c-4 3-7 7-7 11a7 7 0 0 0 14 0c0-4-3-8-7-11z" fill="currentColor" />
+        </svg>
+        <span>Sanatan Clinic</span>
+      </div>
+      <div id="userBox" class="user-box hidden">
+        <span id="userName"></span>
+        <span id="userRole" class="badge"></span>
+        <button id="logoutBtn" class="btn btn-ghost">Log out</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Auth screen -->
+      <section id="authScreen" class="auth-screen">
+        <div class="card auth-card">
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="login">Log in</button>
+            <button class="tab-btn" data-tab="register">Register</button>
+          </div>
+
+          <form id="loginForm" class="form">
+            <p id="loginError" class="form-error hidden"></p>
+            <label>Email<input type="email" name="email" required autocomplete="email" /></label>
+            <label
+              >Password<input
+                type="password"
+                name="password"
+                required
+                autocomplete="current-password"
+            /></label>
+            <button type="submit" class="btn btn-primary">Log in</button>
+          </form>
+
+          <form id="registerForm" class="form hidden">
+            <p id="registerError" class="form-error hidden"></p>
+            <label>Full name<input type="text" name="name" required /></label>
+            <label>Email<input type="email" name="email" required autocomplete="email" /></label>
+            <label
+              >Password<input
+                type="password"
+                name="password"
+                required
+                minlength="8"
+                autocomplete="new-password"
+            /></label>
+            <label
+              >I am a
+              <select name="role" id="roleSelect">
+                <option value="PATIENT">Patient</option>
+                <option value="DOCTOR">Doctor</option>
+              </select>
+            </label>
+            <div id="doctorFields" class="hidden">
+              <label>Specialization<input type="text" name="specialization" /></label>
+              <label
+                >Years of experience<input type="number" name="yearsOfExperience" min="0" max="80"
+              /></label>
+            </div>
+            <button type="submit" class="btn btn-primary">Create account</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- App screen -->
+      <section id="appScreen" class="app-screen hidden">
+        <nav class="tabs app-tabs">
+          <button class="tab-btn active" data-panel="doctorsPanel" id="doctorsTabBtn">
+            Doctors
+          </button>
+          <button class="tab-btn" data-panel="consultationsPanel">Consultations</button>
+        </nav>
+
+        <div id="doctorsPanel" class="panel">
+          <div class="panel-toolbar">
+            <input
+              id="specializationFilter"
+              type="search"
+              placeholder="Filter by specialization…"
+            />
+          </div>
+          <p id="doctorsError" class="form-error hidden"></p>
+          <div id="doctorsList" class="doctor-grid"></div>
+        </div>
+
+        <div id="consultationsPanel" class="panel hidden">
+          <div class="consult-layout">
+            <div class="consult-list-col">
+              <p id="consultationsError" class="form-error hidden"></p>
+              <ul id="consultationsList" class="consult-list"></ul>
+            </div>
+            <div class="consult-chat-col">
+              <div id="chatEmpty" class="chat-empty">Select a consultation to view the chat.</div>
+              <div id="chatPanel" class="chat-panel hidden">
+                <div class="chat-header">
+                  <div>
+                    <strong id="chatCounterpart"></strong>
+                    <span id="chatStatus" class="badge"></span>
+                  </div>
+                  <div id="doctorActions" class="doctor-actions hidden"></div>
+                </div>
+                <div id="chatMessages" class="chat-messages"></div>
+                <form id="chatForm" class="chat-input-row">
+                  <input
+                    id="chatInput"
+                    type="text"
+                    maxlength="5000"
+                    placeholder="Type a message…"
+                    autocomplete="off"
+                  />
+                  <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+                <p id="chatClosedNote" class="chat-closed-note hidden">
+                  This consultation is completed — no further messages can be sent.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
