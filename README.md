@@ -2,7 +2,7 @@
 
 A small backend for a healthcare consultation platform: patients register, browse doctors, start a consultation, chat with the assigned doctor, and the doctor moves the consultation through its lifecycle. A minimal web frontend is included so the whole flow can be used from a browser, not just curl or Postman.
 
-For the original design spec and rationale, see [`SPEC.md`](./SPEC.md). For a full technical walkthrough of the architecture, request lifecycle, data model, and every implementation decision behind this codebase, see [`DEEPDIVE.md`](./DEEPDIVE.md). This README covers running the project and using the API.
+For a full technical walkthrough of the architecture, request lifecycle, data model, and every implementation decision behind this codebase, see [`DEEPDIVE.md`](./DEEPDIVE.md). This README covers running the project and using the API.
 
 ## Architecture
 
