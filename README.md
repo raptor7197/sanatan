@@ -4,6 +4,46 @@ A small backend for a healthcare consultation platform: patients register, brows
 
 For the original design spec and rationale, see [`SPEC.md`](./SPEC.md). For a full technical walkthrough of the architecture, request lifecycle, data model, and every implementation decision behind this codebase, see [`DEEPDIVE.md`](./DEEPDIVE.md). This README covers running the project and using the API.
 
+## Architecture
+
+```mermaid
+flowchart TB
+    subgraph Client
+        Browser["Browser (public/ static frontend)"]
+        API_Client["curl / Postman"]
+    end
+
+    subgraph ExpressApp["Express app (src/app.js)"]
+        direction TB
+        MW["Middleware chain: helmet, cors, morgan, express.json, express.static"]
+        Router["Route layer: /auth, /profile, /doctors, /consultations, /consultations/:id/messages"]
+        Auth["auth middleware: JWT verify, requireRole"]
+        Validate["validate middleware: zod schemas per route"]
+        Controllers["Controllers: req/res only"]
+        Services["Services: business rules, state machine, participant checks"]
+        ErrorHandler["errorHandler + notFoundHandler"]
+    end
+
+    subgraph Data["Data layer"]
+        Prisma["Prisma Client"]
+        Postgres[("PostgreSQL")]
+    end
+
+    Browser -->|fetch, same origin| MW
+    API_Client -->|HTTP| MW
+    MW --> Router
+    Router --> Auth
+    Auth --> Validate
+    Validate --> Controllers
+    Controllers --> Services
+    Services --> Prisma
+    Prisma --> Postgres
+    Services -.throws ApiError.-> ErrorHandler
+    ErrorHandler -->|JSON error envelope| MW
+```
+
+At the container level, `docker compose up` runs two services: `db` (Postgres 16) and `app` (this Express server). The `app` container's start command runs `prisma migrate deploy`, then `prisma/seed.js`, then `node src/server.js`, in sequence, so a single command takes a fresh checkout to a running, seeded API. Full breakdown of every layer in this diagram is in [`DEEPDIVE.md`](./DEEPDIVE.md).
+
 ## Tech stack
 
 Node.js 22, Express 5, PostgreSQL, Prisma, JWT (`jsonwebtoken`) with `bcrypt`, `zod`, `helmet`, `cors`, `express-rate-limit`, `morgan`.
