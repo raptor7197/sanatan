@@ -13,6 +13,10 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 export const app = express();
 
+// Trust the first hop (Vercel's proxy / any reverse proxy in front of this app),
+// so express-rate-limit reads the real client IP from X-Forwarded-For correctly.
+app.set('trust proxy', 1);
+
 app.use(helmet());
 app.use(cors());
 if (process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
