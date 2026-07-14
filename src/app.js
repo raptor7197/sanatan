@@ -34,3 +34,6 @@ app.use('/consultations', messagesRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
+
+// Vercel's zero-config Express detection requires a default export.
+export default app;
